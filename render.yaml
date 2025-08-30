@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: stock-scanner
+    name: stock-intel-dashboard
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: streamlit run dashboard_app.py
