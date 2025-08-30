@@ -4,8 +4,11 @@ import requests
 # ✅ Load API keys securely from environment variables
 POLYGON_KEY = os.environ.get("POLYGON_KEY")
 FMP_KEY = os.environ.get("FMP_KEY")
+ALPHA_KEY = os.environ.get("ALPHA_KEY")
+FINNHUB_KEY = os.environ.get("FINNHUB_KEY")
+NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY")
 
-# 🔍 OHLCV data from Polygon
+# 🔍 OHLCV from Polygon
 def get_ohlcv(ticker):
     url = f"https://api.polygon.io/v2/aggs/ticker/{ticker}/prev?adjusted=true&apiKey={POLYGON_KEY}"
     try:
@@ -16,7 +19,7 @@ def get_ohlcv(ticker):
         print(f"❌ OHLCV fetch failed for {ticker}: {e}")
         return None
 
-# 🔍 Volume data from Polygon
+# 🔍 Volume from Polygon
 def get_volume(ticker):
     data = get_ohlcv(ticker)
     return data['v'] if data else None
@@ -52,4 +55,40 @@ def get_vwap(ticker):
         return data['vwap'] if 'vwap' in data else None
     except Exception as e:
         print(f"❌ VWAP fetch failed for {ticker}: {e}")
+        return None
+
+# 📈 ATR from Alpha Vantage
+def get_atr(ticker):
+    url = f"https://www.alphavantage.co/query?function=ATR&symbol={ticker}&interval=daily&time_period=14&apikey={ALPHA_KEY}"
+    try:
+        response = requests.get(url)
+        data = response.json()
+        series = data.get("Technical Analysis: ATR", {})
+        latest = next(iter(series.values()), {})
+        return float(latest.get("ATR")) if latest else None
+    except Exception as e:
+        print(f"❌ ATR fetch failed for {ticker}: {e}")
+        return None
+
+# 📰 News from NewsAPI
+def get_news_link(ticker):
+    url = f"https://newsapi.org/v2/everything?q={ticker}&sortBy=publishedAt&apiKey={NEWSAPI_KEY}"
+    try:
+        response = requests.get(url)
+        data = response.json()
+        if data.get("articles"):
+            return data["articles"][0]["url"]
+    except Exception as e:
+        print(f"❌ News fetch failed for {ticker}: {e}")
+    return None
+
+# 🧠 Sentiment from Finnhub
+def get_sentiment_link(ticker):
+    url = f"https://finnhub.io/api/v1/news-sentiment?symbol={ticker}&token={FINNHUB_KEY}"
+    try:
+        response = requests.get(url)
+        data = response.json()
+        return data.get("url") or f"https://finnhub.io/news/{ticker}"
+    except Exception as e:
+        print(f"❌ Sentiment fetch failed for {ticker}: {e}")
         return None
