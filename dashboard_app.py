@@ -2,7 +2,7 @@ import streamlit as st
 import os
 os.environ["STREAMLIT_SERVER_PORT"] = os.environ.get("PORT", "8501")
 
-from scanner import tier1_scan
+from scanner import tier2_scan
 from database import get_recent_alerts
 
 st.set_page_config(page_title="📊 Stock Momentum Scanner", layout="wide")
@@ -18,3 +18,9 @@ else:
             st.write(f"Price: ${alert['price']} | Change: {alert['price_change']}% | Volume: {alert['volume']}")
             st.write(f"RSI: {alert['rsi']} | RVOL: {alert['rvol']} | EMA Stack: {alert['ema_stack']} | VWAP Δ: {alert['vwap_proximity']}%")
             st.write(f"ATR: {alert['atr']}")
+            if alert['tier'] == 2:
+                st.write(f"AI Score: {alert['score']} | Reason: {alert['narrative']}")
+                st.write(f"Entry: ${alert['entry']} | TP: ${alert['tp']} | SL: ${alert['sl']}")
+                st.write(f"[Sentiment Link]({alert['sentiment_link']}) | [Catalyst Link]({alert['catalyst_link']}) | [News Link]({alert['news_link']})")
+            if st.button(f"Run Deep Scan for {alert['ticker']}"):
+                tier2_scan(alert['ticker'])
