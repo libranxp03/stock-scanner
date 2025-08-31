@@ -1,12 +1,6 @@
-setuptools
 streamlit==1.29.0
-numpy==1.26.4
-pandas==2.2.2
-pandas-ta==0.3.14b
 requests
-scikit-learn
-xgboost
 python-telegram-bot
 supabase
-tweepy
-newsapi-python
+pandas
+numpy
