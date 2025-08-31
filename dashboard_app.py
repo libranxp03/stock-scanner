@@ -1,15 +1,19 @@
+import os
+os.environ["STREAMLIT_SERVER_PORT"] = os.environ.get("PORT", "8501")
+
 import streamlit as st
-from database import get_recent_alerts
-from scanner import tier2_scan
+
+try:
+    from database import get_recent_alerts
+    from scanner import tier2_scan
+except Exception as e:
+    st.error(f"Startup error: {e}")
 
 st.set_page_config(page_title="📊 Stock Intelligence Dashboard", layout="wide")
 st.title("📊 Stock Intelligence Dashboard")
 
-# 🔄 Load alerts from Supabase
 alerts = get_recent_alerts()
-
-# 📊 Display scan metrics
-total_scanned = 128  # Replace with live count if available
+total_scanned = 128  # Replace with live count if tracked
 filtered_alerts = len(alerts)
 alert_rate = round((filtered_alerts / total_scanned) * 100, 2) if total_scanned else 0
 
@@ -20,11 +24,9 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 🔘 Manual scan trigger
 if st.button("🔍 Run Manual Scan"):
     tier2_scan()
 
-# 📈 Display alert cards
 if not alerts:
     st.warning("No alerts found yet. Waiting for next scan or manual trigger.")
 else:
