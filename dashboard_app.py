@@ -38,7 +38,6 @@ else:
     for alert in alerts:
         st.markdown("---")
         st.subheader(f"📈 ${alert['ticker']} | Tier {alert['tier']}")
-
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("RSI", alert['rsi'])
@@ -49,10 +48,8 @@ else:
         with col3:
             st.metric("Price", alert['price'])
             st.metric("Change", f"{alert['price_change']}%")
-
         st.markdown(f"**Validation Entry:** {alert['narrative']}")
         st.markdown(f"**TP:** {alert['tp']} | **SL:** {alert['sl']}")
-
         st.markdown(f"""
         🔗 [Trending]({alert['sentiment_link']})  
         🔗 [Catalyst]({alert['catalyst_link']})  
