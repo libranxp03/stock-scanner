@@ -51,9 +51,7 @@ else:
             st.metric("Change", f"{alert['price_change']}%")
 
         st.markdown(f"**Validation Entry:** {alert['narrative']}")
-        st.markdown(f"**Validation Strength:** High momentum breakout")
-        st.markdown(f"**TP (Take Profit):** {alert['tp']}")
-        st.markdown(f"**SL (Stop Loss):** {alert['sl']}")
+        st.markdown(f"**TP:** {alert['tp']} | **SL:** {alert['sl']}")
 
         st.markdown(f"""
         🔗 [Trending]({alert['sentiment_link']})  
