@@ -2,12 +2,7 @@ import requests
 import os
 from api_clients import get_ohlcv, get_rsi, get_ema, get_vwap, get_news_link, get_sentiment_link
 
-# Load API keys
 POLYGON_KEY = os.environ.get("POLYGON_KEY")
-FMP_KEY = os.environ.get("FMP_KEY")
-ALPHA_KEY = os.environ.get("ALPHA_KEY")
-FINNHUB_KEY = os.environ.get("FINNHUB_KEY")
-NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY")
 
 def fetch_tickers():
     url = f"https://api.polygon.io/v3/reference/tickers?market=stocks&active=true&limit=1000&apiKey={POLYGON_KEY}"
@@ -28,19 +23,14 @@ def fetch_indicators(ticker):
     vwap = get_vwap(ticker)
     rsi = get_rsi(ticker)
 
-    ema_stack = "unknown"
-    if ema is not None:
-        ema_stack = "bullish" if ohlcv['c'] > ema else "bearish"
-
-    vwap_proximity = None
-    if vwap:
-        vwap_proximity = round((ohlcv['c'] - vwap) / vwap * 100, 2)
+    ema_stack = "bullish" if ema and ohlcv['c'] > ema else "bearish"
+    vwap_proximity = round((ohlcv['c'] - vwap) / vwap * 100, 2) if vwap else None
 
     return {
         "price": ohlcv['c'],
         "price_change": round((ohlcv['c'] - ohlcv['o']) / ohlcv['o'] * 100, 2),
         "volume": ohlcv['v'],
-        "rsi": rsi if rsi is not None else 50,
+        "rsi": rsi,
         "rvol": 1.5,  # Replace with actual RVOL logic
         "ema": ema,
         "vwap": vwap,
