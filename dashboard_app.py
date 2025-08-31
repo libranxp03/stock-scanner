@@ -2,21 +2,16 @@ import os
 os.environ["STREAMLIT_SERVER_PORT"] = os.environ.get("PORT", "8501")
 
 import streamlit as st
-
-try:
-    from database import get_recent_alerts
-    from scanner import tier2_scan
-except Exception as e:
-    st.error(f"Startup error: {e}")
-    st.stop()
+from database import get_recent_alerts
+from tier2_scanner import run_tier2_scan
 
 st.set_page_config(page_title="📊 Stock Intelligence Dashboard", layout="wide")
 st.title("📊 Stock Intelligence Dashboard")
 
 alerts = get_recent_alerts()
-total_scanned = 128
 filtered_alerts = len(alerts)
-alert_rate = round((filtered_alerts / total_scanned) * 100, 2) if total_scanned else 0
+total_scanned = 128
+alert_rate = round((filtered_alerts / total_scanned) * 100, 2)
 
 st.markdown(f"""
 <div style="display: flex; gap: 2rem;">
@@ -25,15 +20,15 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-if st.button("🔍 Run Manual Scan"):
+if st.button("🔍 Run Tier 2 Scan"):
     try:
-        tier2_scan()
-        st.success("Manual scan triggered.")
+        run_tier2_scan()
+        st.success("Tier 2 scan triggered.")
     except Exception as e:
         st.error(f"Scan error: {e}")
 
 if not alerts:
-    st.warning("No alerts found yet. Waiting for next scan or manual trigger.")
+    st.warning("No alerts found yet.")
 else:
     for alert in alerts:
         st.markdown("---")
