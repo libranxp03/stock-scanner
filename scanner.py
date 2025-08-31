@@ -13,7 +13,6 @@ def tier1_scan():
         if check_recent_alerts(ticker): continue
         data = fetch_indicators(ticker)
         if not is_valid(data): continue
-
         if (
             data['price_change'] > 1 and
             data['rvol'] > 1.2 and
