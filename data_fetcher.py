@@ -23,21 +23,32 @@ def fetch_tickers():
 
 def fetch_indicators(ticker):
     ohlcv = get_ohlcv(ticker)
-    if not ohlcv: return None
+    if not ohlcv or 'c' not in ohlcv or ohlcv['c'] is None:
+        return None
 
     ema = get_ema(ticker)
     vwap = get_vwap(ticker)
+    rsi = get_rsi(ticker)
+
+    # ✅ Safe fallback comparisons
+    ema_stack = "unknown"
+    if ema is not None:
+        ema_stack = "bullish" if ohlcv['c'] > ema else "bearish"
+
+    vwap_proximity = None
+    if vwap:
+        vwap_proximity = round((ohlcv['c'] - vwap) / vwap * 100, 2)
 
     return {
         "price": ohlcv['c'],
         "price_change": round((ohlcv['c'] - ohlcv['o']) / ohlcv['o'] * 100, 2),
         "volume": ohlcv['v'],
-        "rsi": get_rsi(ticker),
+        "rsi": rsi if rsi is not None else 50,
         "rvol": ohlcv['v'] / ohlcv['v'],  # Replace with actual RVOL logic
         "ema": ema,
         "vwap": vwap,
-        "vwap_proximity": round((ohlcv['c'] - vwap) / vwap * 100, 2) if vwap else None,
-        "ema_stack": "bullish" if ohlcv['c'] > ema else "bearish",
+        "vwap_proximity": vwap_proximity,
+        "ema_stack": ema_stack,
         "atr": 2.5  # Replace with actual ATR logic
     }
 
