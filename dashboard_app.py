@@ -14,7 +14,7 @@ st.set_page_config(page_title="📊 Stock Intelligence Dashboard", layout="wide"
 st.title("📊 Stock Intelligence Dashboard")
 
 alerts = get_recent_alerts()
-total_scanned = 128  # Replace with live count if tracked
+total_scanned = 128
 filtered_alerts = len(alerts)
 alert_rate = round((filtered_alerts / total_scanned) * 100, 2) if total_scanned else 0
 
