@@ -7,6 +7,6 @@ services:
     autoDeploy: true
 
 cronJobs:
-  - name: stock-scan
+  - name: tier1-scan
     schedule: "*/45 8-21 * * *"
-    command: python scanner.py
+    command: python tier1_scanner.py
