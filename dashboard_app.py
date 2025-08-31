@@ -8,6 +8,7 @@ try:
     from scanner import tier2_scan
 except Exception as e:
     st.error(f"Startup error: {e}")
+    st.stop()
 
 st.set_page_config(page_title="📊 Stock Intelligence Dashboard", layout="wide")
 st.title("📊 Stock Intelligence Dashboard")
@@ -25,7 +26,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 if st.button("🔍 Run Manual Scan"):
-    tier2_scan()
+    try:
+        tier2_scan()
+        st.success("Manual scan triggered.")
+    except Exception as e:
+        st.error(f"Scan error: {e}")
 
 if not alerts:
     st.warning("No alerts found yet. Waiting for next scan or manual trigger.")
