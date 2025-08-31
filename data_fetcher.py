@@ -1,8 +1,25 @@
+import requests
+import os
 from api_clients import get_ohlcv, get_rsi, get_ema, get_vwap, get_news_link, get_sentiment_link
 
+# 🔐 Load all API keys securely
+POLYGON_KEY = os.environ.get("POLYGON_KEY")
+FMP_KEY = os.environ.get("FMP_KEY")
+ALPHA_KEY = os.environ.get("ALPHA_KEY")
+FINNHUB_KEY = os.environ.get("FINNHUB_KEY")
+NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY")
+REDDIT_KEY = os.environ.get("REDDIT_KEY")
+TWITTER_BEARER_TOKEN = os.environ.get("TWITTER_BEARER_TOKEN")
+
 def fetch_tickers():
-    # Replace with live API call to your stock universe
-    return []  # Empty by default; scanner skips if no tickers
+    url = f"https://api.polygon.io/v3/reference/tickers?market=stocks&active=true&limit=1000&apiKey={POLYGON_KEY}"
+    try:
+        response = requests.get(url)
+        data = response.json()
+        return [t['ticker'] for t in data['results'] if t['primary_exchange'] in ['XNAS', 'XNYS']]
+    except Exception as e:
+        print(f"❌ Failed to fetch tickers: {e}")
+        return []
 
 def fetch_indicators(ticker):
     ohlcv = get_ohlcv(ticker)
