@@ -8,7 +8,8 @@ def tier1_scan():
     for ticker in tickers:
         if check_recent_alerts(ticker): continue
         data = fetch_indicators(ticker)
-        if not data: continue
+        if not data or data['ema_stack'] == "unknown" or data['vwap_proximity'] is None:
+            continue
 
         if (
             data['price_change'] > 1 and
@@ -25,7 +26,8 @@ def tier2_scan(ticker=None):
     for t in tickers:
         if check_recent_alerts(t): continue
         data = fetch_indicators(t)
-        if not data: continue
+        if not data or data['ema_stack'] == "unknown" or data['vwap_proximity'] is None:
+            continue
         sentiment = fetch_sentiment(t)
         news = fetch_news(t)
         insider = fetch_insider(t)
