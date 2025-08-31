@@ -5,7 +5,7 @@ from ai_model import run_model
 
 def is_valid(data):
     required = ['price', 'price_change', 'volume', 'rsi', 'rvol', 'ema', 'vwap', 'vwap_proximity', 'ema_stack', 'atr']
-    return data is not None and all(data.get(k) is not None for k in required)
+    return data and all(data.get(k) is not None for k in required)
 
 def tier1_scan():
     tickers = fetch_tickers()
