@@ -18,14 +18,11 @@ def fetch_indicators(ticker):
     ohlcv = get_ohlcv(ticker)
     if not ohlcv or 'c' not in ohlcv or ohlcv['c'] is None:
         return None
-
     ema = get_ema(ticker)
     vwap = get_vwap(ticker)
     rsi = get_rsi(ticker)
-
     if not all([ema, vwap, rsi]):
         return None
-
     return {
         "price": ohlcv['c'],
         "price_change": round((ohlcv['c'] - ohlcv['o']) / ohlcv['o'] * 100, 2),
